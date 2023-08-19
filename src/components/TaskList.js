@@ -53,9 +53,9 @@ const TaskList = () => {
     }
     try {
       await axios.post(`${URL}/api/tasks`, formData);
+      getTasks();
       toast.success("Task added successfully");
       setFormData({ ...formData, name: "" });
-      getTasks();
     } catch (error) {
       toast.error(error.message);
       console.log(error);
@@ -65,9 +65,9 @@ const TaskList = () => {
   const deleteTask = async (id) => {
     try {
       await axios.delete(`${URL}/api/tasks/${id}`);
+      getTasks();
       toast.success("Task Removed successfully");
       hooray();
-      getTasks();
     } catch (error) {
       toast.error(error.message);
     }
@@ -88,8 +88,8 @@ const TaskList = () => {
       await axios.put(`${URL}/api/tasks/${taskID}`, formData);
       setFormData({ ...formData, name: "" });
       setIsEditing(false);
-      toast.success("Task Updated successfully");
       getTasks();
+      toast.success("Task Updated successfully");
     } catch (error) {
       toast.error(error.message);
     }
@@ -100,15 +100,15 @@ const TaskList = () => {
       name: task.name,
       completed: !task.completed,
     };
-    if (newFormData.completed) {
-      toast.success("Task Completed successfully");
-      hooray();
-    } else {
-      toast.warning("Task Added to Todo");
-    }
     try {
       await axios.put(`${URL}/api/tasks/${task._id}`, newFormData);
       getTasks();
+      if (newFormData.completed) {
+        toast.success("Task Completed successfully");
+        hooray();
+      } else {
+        toast.warning("Task Added to Todo");
+      }
     } catch (error) {
       toast.error(error.message);
     }
