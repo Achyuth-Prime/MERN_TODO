@@ -36,7 +36,7 @@ const TaskList = () => {
 
   const getTasks = async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const { data } = await axios.get(`${URL}/api/tasks`);
       setTasks(data);
       setIsLoading(false);
@@ -47,6 +47,7 @@ const TaskList = () => {
   };
 
   const createTask = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     if (name === "") {
       return toast.error("Input field cannot be empty");
@@ -58,11 +59,13 @@ const TaskList = () => {
       setFormData({ ...formData, name: "" });
     } catch (error) {
       toast.error(error.message);
+      setIsLoading(false);
       console.log(error);
     }
   };
 
   const deleteTask = async (id) => {
+    setIsLoading(true);
     try {
       await axios.delete(`${URL}/api/tasks/${id}`);
       getTasks();
@@ -70,6 +73,7 @@ const TaskList = () => {
       hooray();
     } catch (error) {
       toast.error(error.message);
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +84,7 @@ const TaskList = () => {
   };
 
   const updateTask = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     if (name === "") {
       return toast.error("Input field cannot be empty.");
@@ -92,10 +97,12 @@ const TaskList = () => {
       toast.success("Task Updated successfully");
     } catch (error) {
       toast.error(error.message);
+      setIsLoading(false);
     }
   };
 
   const toggleComplete = async (task) => {
+    setIsLoading(true);
     const newFormData = {
       name: task.name,
       completed: !task.completed,
@@ -111,6 +118,7 @@ const TaskList = () => {
       }
     } catch (error) {
       toast.error(error.message);
+      setIsLoading(false);
     }
   };
 
