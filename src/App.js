@@ -10,7 +10,7 @@ function App() {
       <div className="task-container">
         <TaskList />
       </div>
-      <ToastContainer />
+      <ToastContainer autoClose={1700} />
     </div>
   );
 }
