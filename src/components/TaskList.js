@@ -11,7 +11,7 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [taskID, setTaskID] = useState("");
 
@@ -36,6 +36,7 @@ const TaskList = () => {
 
   const getTasks = async () => {
     try {
+      setIsLoading(true);
       const { data } = await axios.get(`${URL}/api/tasks`);
       setTasks(data);
       setIsLoading(false);
