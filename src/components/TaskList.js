@@ -11,7 +11,7 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [taskID, setTaskID] = useState("");
 
@@ -21,7 +21,7 @@ const TaskList = () => {
   });
   const { name } = formData;
 
-  const [isConfettiActive, setIsConfettiActive] = useState(true);
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const hooray = () => {
     setIsConfettiActive(true);
     setTimeout(() => {
