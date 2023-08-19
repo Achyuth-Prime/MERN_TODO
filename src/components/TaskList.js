@@ -21,7 +21,7 @@ const TaskList = () => {
   });
   const { name } = formData;
 
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [isConfettiActive, setIsConfettiActive] = useState(true);
   const hooray = () => {
     setIsConfettiActive(true);
     setTimeout(() => {
@@ -36,12 +36,11 @@ const TaskList = () => {
 
   const getTasks = async () => {
     try {
-      // setIsLoading(true);
       const { data } = await axios.get(`${URL}/api/tasks`);
       setTasks(data);
-      setIsLoading(false);
     } catch (error) {
       toast.error(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -50,6 +49,7 @@ const TaskList = () => {
     setIsLoading(true);
     e.preventDefault();
     if (name === "") {
+      setIsLoading(false);
       return toast.error("Input field cannot be empty");
     }
     try {
@@ -58,8 +58,8 @@ const TaskList = () => {
       toast.success("Task added successfully");
       setFormData({ ...formData, name: "" });
     } catch (error) {
-      toast.error(error.message);
       setIsLoading(false);
+      toast.error(error.message);
       console.log(error);
     }
   };
@@ -72,8 +72,8 @@ const TaskList = () => {
       toast.success("Task Removed successfully");
       hooray();
     } catch (error) {
-      toast.error(error.message);
       setIsLoading(false);
+      toast.error(error.message);
     }
   };
 
@@ -87,6 +87,7 @@ const TaskList = () => {
     setIsLoading(true);
     e.preventDefault();
     if (name === "") {
+      setIsLoading(false);
       return toast.error("Input field cannot be empty.");
     }
     try {
@@ -96,8 +97,8 @@ const TaskList = () => {
       getTasks();
       toast.success("Task Updated successfully");
     } catch (error) {
-      toast.error(error.message);
       setIsLoading(false);
+      toast.error(error.message);
     }
   };
 
@@ -117,8 +118,8 @@ const TaskList = () => {
         toast.warning("Task Added to Todo");
       }
     } catch (error) {
-      toast.error(error.message);
       setIsLoading(false);
+      toast.error(error.message);
     }
   };
 
