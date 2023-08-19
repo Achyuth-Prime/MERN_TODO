@@ -138,7 +138,6 @@ const TaskList = () => {
           recycle={false}
         />
       )}
-
       <h1 className="--flex-center">Task Manager</h1>
       {tasks.length > 0 && (
         <div className="--flex-center">
@@ -147,7 +146,6 @@ const TaskList = () => {
           </h4>
         </div>
       )}
-
       <TaskForm
         name={name}
         handleInputChange={handleInputChange}
@@ -155,14 +153,11 @@ const TaskList = () => {
         isEditing={isEditing}
         updateTask={updateTask}
       />
-
-      {isLoading && (
+      {isLoading ? (
         <div className="--flex-center">
           <img src={loadingImg} alt="Loading" />
         </div>
-      )}
-
-      {!isLoading && tasks.length === 0 ? (
+      ) : !isLoading && tasks.length === 0 ? (
         <h4 className="--py --flex-center">No Tasks Added</h4>
       ) : (
         <>
