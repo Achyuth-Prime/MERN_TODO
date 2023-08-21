@@ -299,16 +299,11 @@ p {
 
 .--btn-primary {
   color: #fff;
-  background: #007bff;
+  background: #0077ff;
 }
 .--btn-secondary {
   color: #fff;
-  border: 1px solid #fff;
-  background: transparent;
-}
-.--btn-danger {
-  color: #fff;
-  background: orangered;
+  background: #00ff84;
 }
 
 .--btn-success {
@@ -433,7 +428,8 @@ a:hover {
   font-size: 1.5rem;
 }
 
-.app {
+.app,
+.user_container {
   width: 100%;
   height: 100vh;
   background-color: var(--color-primary);
@@ -446,7 +442,6 @@ a:hover {
 .task-container {
   width: 100%;
   max-width: 55%;
-  /* height: auto; */
   max-height: 90%;
   background-color: #fff;
   border: 1px solid transparent;
@@ -563,4 +558,77 @@ a:hover {
   max-width: 88%;
   flex-grow: 1;
   word-break: break-word;
+}
+
+/* Styles for the user_page container */
+.user_page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--color-dark);
+}
+
+/* Styles for the user_form_container */
+.user_form_container {
+  background-color: var(--color-white);
+  border: 1px solid #dcdcdc;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 40%;
+}
+
+/* Styles for the user_form */
+.user_form {
+  text-align: center;
+}
+
+/* Styles for the form elements */
+.input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+}
+
+/* Styles for the error message */
+.error_msg {
+  color: red;
+  margin: 10px 0;
+}
+
+.--btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.--btn-secondary {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.--btn {
+  margin: 10px auto;
+  width: 20%;
+}
+
+.--btn-danger {
+  color: #fff;
+  background: orangered;
+  width: 10%;
+}
+
+.alternate {
+  margin-top: 20px;
+  text-align: center;
 }

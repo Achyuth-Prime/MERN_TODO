@@ -8,19 +8,6 @@ import TaskForm from "./TaskForm";
 import loadingImg from "../assets/loader.gif";
 
 const TaskList = () => {
-  const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [taskID, setTaskID] = useState("");
-
-  const [formData, setFormData] = useState({
-    name: "",
-    completed: false,
-  });
-  const { name } = formData;
-
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const hooray = () => {
     setIsConfettiActive(true);
@@ -29,6 +16,23 @@ const TaskList = () => {
     }, 3000);
   };
 
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+
+  const [tasks, setTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [todos, setTodos] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [taskID, setTaskID] = useState("");
+
+  const [formData, setFormData] = useState({
+    title: "",
+    completed: false,
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -36,66 +40,114 @@ const TaskList = () => {
 
   const getTasks = async () => {
     try {
-      const { data } = await axios.get(`${URL}/api/tasks`);
-      setTasks(data);
+      const res = await axios({
+        method: "get",
+        url: `${URL}/api/`,
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (res.status === 200) {
+        const sortedTasks = res.data.tasks.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        setTasks(sortedTasks);
+      } else {
+        throw new Error(res.data?.message || "An error occurred.");
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Error in getTasks:", error);
+      toast.error(error.res.data?.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const createTask = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
-    if (name === "") {
+    setIsLoading(true);
+    if (formData.title === "") {
       setIsLoading(false);
       return toast.error("Input field cannot be empty");
     }
     try {
-      await axios.post(`${URL}/api/tasks`, formData);
-      getTasks();
-      toast.success("Task added successfully");
-      setFormData({ ...formData, name: "" });
+      const res = await axios({
+        method: "post",
+        url: `${URL}/api/`,
+        data: formData,
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (res.status === 201) {
+        getTasks();
+        toast.success("Task added successfully");
+        setFormData({ ...formData, title: "" });
+      } else {
+        throw new Error(res.data.message || "An error occurred.");
+      }
     } catch (error) {
       setIsLoading(false);
       toast.error(error.message);
-      console.log(error);
     }
   };
 
-  const deleteTask = async (id) => {
+  const deleteTask = async (task) => {
+    if (isEditing && taskID === task._id) {
+      return toast.error("Please Complete Task Updation First");
+    }
     setIsLoading(true);
     try {
-      await axios.delete(`${URL}/api/tasks/${id}`);
-      getTasks();
-      toast.success("Task Removed successfully");
-      hooray();
+      const res = await axios({
+        method: "delete",
+        url: `${URL}/api/${task._id}`,
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (res.status === 200) {
+        getTasks();
+        toast.success("Task Removed successfully");
+        if (task.completed) hooray();
+      } else {
+        throw new Error(res.data.message || "An error occurred.");
+      }
     } catch (error) {
       setIsLoading(false);
       toast.error(error.message);
     }
   };
 
-  const getSingleTask = async (task) => {
-    setFormData({ name: task.name, completed: task.completed });
+  const getTaskForEditing = async (task) => {
+    setFormData({ title: task.title, completed: task.completed });
     setTaskID(task._id);
     setIsEditing(true);
   };
 
   const updateTask = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
-    if (name === "") {
+    setIsLoading(true);
+    if (formData.title === "") {
       setIsLoading(false);
       return toast.error("Input field cannot be empty.");
     }
     try {
-      await axios.put(`${URL}/api/tasks/${taskID}`, formData);
-      setFormData({ ...formData, name: "" });
-      setIsEditing(false);
-      getTasks();
-      toast.success("Task Updated successfully");
+      const res = await axios({
+        method: "put",
+        url: `${URL}/api/${taskID}`,
+        data: formData,
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (res.status === 200) {
+        setFormData({ ...formData, title: "" });
+        setIsEditing(false);
+        getTasks();
+        toast.success("Task Updated Successfully");
+      } else {
+        throw new Error(res.data.message || "An error occurred.");
+      }
     } catch (error) {
       setIsLoading(false);
       toast.error(error.message);
@@ -103,19 +155,34 @@ const TaskList = () => {
   };
 
   const toggleComplete = async (task) => {
+    if (isEditing && taskID === task._id) {
+      return toast.error("Please Complete Task Updation First");
+    }
+
     setIsLoading(true);
-    const newFormData = {
-      name: task.name,
+    const toggledTask = {
       completed: !task.completed,
     };
+
     try {
-      await axios.put(`${URL}/api/tasks/${task._id}`, newFormData);
-      getTasks();
-      if (newFormData.completed) {
-        toast.success("Task Completed successfully");
-        hooray();
+      const res = await axios({
+        method: "put",
+        url: `${URL}/api/${task._id}`,
+        data: toggledTask,
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (res.status === 200) {
+        getTasks();
+        if (toggledTask.completed) {
+          toast.success("Task Completed successfully");
+          hooray();
+        } else {
+          toast.warning("Task Added to Todo");
+        }
       } else {
-        toast.warning("Task Added to Todo");
+        throw new Error(res.data.message || "An error occurred.");
       }
     } catch (error) {
       setIsLoading(false);
@@ -134,9 +201,20 @@ const TaskList = () => {
       if (task.completed) cTask.push(task);
       else incTasks.push(task);
     });
-    setCompletedTasks(cTask);
+    const cTaskSorted = cTask.sort(
+      (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
+    );
+    setCompletedTasks(cTaskSorted);
     setTodos(incTasks);
   }, [tasks]);
+
+  const handleLogout = () => {
+    setIsLoading(true);
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    window.location = "/";
+    setIsLoading(false);
+  };
 
   return (
     <div>
@@ -147,16 +225,20 @@ const TaskList = () => {
           recycle={false}
         />
       )}
+      <h4 className="--flex-center">{username}'s</h4>
       <h1 className="--flex-center">Task Manager</h1>
       {tasks.length > 0 && (
         <div className="--flex-center">
           <h4>
-            <b>Total Tasks:</b> {tasks.length}
+            <b>Your Total Tasks:</b> {tasks.length}
           </h4>
         </div>
       )}
+      <button className="--btn --btn-danger" onClick={handleLogout}>
+        Logout
+      </button>
       <TaskForm
-        name={name}
+        title={formData.title}
         handleInputChange={handleInputChange}
         createTask={createTask}
         isEditing={isEditing}
@@ -186,7 +268,7 @@ const TaskList = () => {
                       task={task}
                       index={index}
                       deleteTask={deleteTask}
-                      getSingleTask={getSingleTask}
+                      getTaskForEditing={getTaskForEditing}
                       toggleComplete={toggleComplete}
                     />
                   );
@@ -211,7 +293,7 @@ const TaskList = () => {
                       task={task}
                       index={index}
                       deleteTask={deleteTask}
-                      getSingleTask={getSingleTask}
+                      getTaskForEditing={getTaskForEditing}
                       toggleComplete={toggleComplete}
                     />
                   );
