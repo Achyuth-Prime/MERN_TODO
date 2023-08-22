@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { URL } from "../App";
+import loadingImg from "../assets/loader.gif";
 
 function Login() {
   const [data, setData] = useState({ username: "", password: "" });
@@ -13,8 +14,11 @@ function Login() {
     setData({ ...data, [input.name]: input.value });
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await axios.post(`${URL}/api/users/login`, data);
       toast.success(res.data.message);
@@ -29,6 +33,8 @@ function Login() {
       ) {
         setError(error.response.data.message);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,6 +63,11 @@ function Login() {
               className="input"
             />
             {error && <div className="error_msg">{error}</div>}
+            {isLoading && (
+              <div className="--flex-center">
+                <img src={loadingImg} className="gif" alt="Loading" />
+              </div>
+            )}
             <button className="--btn --btn-primary" type="submit">
               Log In
             </button>

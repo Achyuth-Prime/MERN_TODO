@@ -632,3 +632,8 @@ a:hover {
   margin-top: 20px;
   text-align: center;
 }
+
+.gif {
+  height: 30px;
+  width: 30px;
+}
