@@ -1,3 +1,12 @@
+## Description:
+
+Introducing a versatile Task Manager web application, meticulously crafted with the power of the MERN (MongoDB, Express, React, Node.js) stack. This comprehensive platform offers a seamless experience for organizing and managing tasks effortlessly. 
+Key Features:
+
+*User Authentication: Start your journey with a secure login and registration page, ensuring your data is protected and personalized.
+
+*Intuitive Task Management: Effortlessly create, edit, and delete tasks. Look at how the tasks smart arrange themselves. 
+
 ## Live Site:
 
 https://mern-task-app-five.vercel.app/
